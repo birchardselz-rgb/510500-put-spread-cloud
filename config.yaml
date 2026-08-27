@@ -1,0 +1,68 @@
+# ============================================================
+# 510500/588080 Put 价差云端看板 — 配置
+# 部署到 Streamlit Community Cloud 用；数据由云端直接拉行情，
+# 不依赖任何本地数据库。
+# ============================================================
+
+account:
+  capital: 500000
+  multiplier: 10000
+  single_batch_risk_pct: 0.02
+  suggested_contracts_max: 10
+
+scan:
+  interval_seconds: 30          # 云端自动扫描间隔（秒）
+  dte_min: 15
+  dte_max: 45
+  top_n: 10
+  stale_after_seconds: 300      # 行情陈旧判定阈值（秒）
+
+underlyings:
+  510500:
+    name: 中证500ETF
+    exchange: sh
+    option_spot_prefix: sh510500
+    ths_hex: hs_510500
+    em_secid: "1.510500"
+    strike_step: 0.25
+    widths: [0.25, 0.50]
+    focus_spread: ["7.75/7.50"]
+  588080:
+    name: 科创50ETF
+    exchange: sh
+    option_spot_prefix: sh588080
+    ths_hex: hs_588080
+    em_secid: "1.588080"
+    strike_step: 0.05
+    widths: [0.05, 0.10]
+    focus_spread: []
+
+# 数据源：同花顺优先，新浪期权盘口
+data_sources:
+  priority: [ths, sina, eastmoney]
+  option_priority: [sina]
+  ths: {enabled: true, timeout: 6, retries: 2}
+  sina: {enabled: true, timeout: 10, retries: 2}
+  eastmoney: {enabled: true, timeout: 6, retries: 1}
+  mock: {enabled: false}        # 云端不用 mock
+
+thresholds:
+  credit_attractive: 0.085
+  credit_good: 0.095
+  credit_strong: 0.105
+  cushion_min: 0.02
+  rr_min: 0.50
+  delta_pref_lo: 0.15
+  delta_pref_hi: 0.35
+  iv_pref_lo: 0.15
+  iv_pref_hi: 0.35
+  min_spread_ratio: 0.25
+  min_volume: 0
+  min_oi: 0
+
+alerts:
+  console: true
+  sound: false
+
+storage:
+  db_path: ""                    # 云端无本地库，留空
