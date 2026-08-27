@@ -37,13 +37,14 @@ underlyings:
     widths: [0.05, 0.10]
     focus_spread: []
 
-# 数据源：同花顺优先，新浪期权盘口
+# 数据源：同花顺优先（海外实测可用），新浪期权盘口。
+# 东财 push2 从海外不可靠（socket hang up），已从降级链移除。
 data_sources:
-  priority: [ths, sina, eastmoney]
+  priority: [ths, sina]
   option_priority: [sina]
-  ths: {enabled: true, timeout: 6, retries: 2}
-  sina: {enabled: true, timeout: 10, retries: 2}
-  eastmoney: {enabled: true, timeout: 6, retries: 1}
+  ths: {enabled: true, timeout: 8, retries: 2}
+  sina: {enabled: true, timeout: 12, retries: 3}
+  eastmoney: {enabled: false, timeout: 6, retries: 0}
   mock: {enabled: false}        # 云端不用 mock
 
 thresholds:

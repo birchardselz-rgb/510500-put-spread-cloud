@@ -35,7 +35,7 @@ class CloudScanner:
 
     # ------------------------------------------------------------------
     def scan_all(self, codes: Optional[List[str]] = None) -> Dict[str, dict]:
-        """扫描全部标的，返回并缓存结果。"""
+        """扫描全部标的，返回并缓存结果（含 _scan_ts 时间戳供看板显示）。"""
         codes = codes or self.cfg.all_underlying_codes()
         out: Dict[str, dict] = {}
         for code in codes:
@@ -44,10 +44,11 @@ class CloudScanner:
                 out[code] = r
             except Exception as e:  # noqa: BLE001
                 logger.error("扫描 %s 失败: %s", code, e)
-                out[code] = {"error": str(e)}
+                out[code] = {"error": str(e), "code": code}
+        out["_scan_ts"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with self._lock:
             self.results.update(out)
-            self.last_scan_ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.last_scan_ts = out["_scan_ts"]
         return out
 
     def _scan_one(self, code: str) -> dict:
